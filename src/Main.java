@@ -1,7 +1,11 @@
+import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+
+
 //         while (true) {
 //             switch (ToDoStatus) {
 //                 case 1:
@@ -24,7 +28,8 @@ public class Main {
 //
 //
 //
-//             }
+//              }
+
         System.out.println("Welcome!");
         Scanner scanner = new Scanner(System.in);
         ToDoStatus toDoStatus = new ToDoStatus();
@@ -43,6 +48,7 @@ public class Main {
             switch (menu) {
                 case 1:
                     toDoStatus.create();
+
                     break;
                 case 2:
                      System.out.print("edit to number:");

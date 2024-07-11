@@ -1,11 +1,11 @@
+import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.zip.DataFormatException;
 
 public class ToDoStatus {
-    private List<TODO> todoList;
+    private static List<TODO> todoList;
     private Scanner scanner;
 
     public ToDoStatus() {
@@ -24,15 +24,20 @@ public class ToDoStatus {
                 LocalDate until = LocalDate.parse(scanner.nextLine());
                 TODO toDO = new TODO(titile, until);
                 todoList.add(toDO);
+                ToDoStatus.writeData();
                 break;
 
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
 
+
         }
+        System.out.println("Saved!!");
+
     }
     public void printList () {
+        todoList = ToDoStatus.readData();
         if (todoList.isEmpty()) {
             System.out.println("You have no more TODOs left!!!");
 
@@ -68,6 +73,7 @@ public class ToDoStatus {
             }
 
         }
+        System.out.println("Saved!!");
     }
     public void finishList(int index) {
         todoList.set(index , new TODO(todoList.get(index).getTitle()+"(Done)",
@@ -78,5 +84,46 @@ public class ToDoStatus {
     public void DeleteList(int index) {
         todoList.remove(index-1);
     }
+
+    static List<TODO> readData() {
+        List<TODO> toDoList = new ArrayList<>();
+        try (FileReader fileReader = new FileReader("ToDoList.csv");
+             BufferedReader reader= new BufferedReader(fileReader)) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] elements = line.split(",");
+                LocalDate date = LocalDate.parse(elements[1]);
+                toDoList.add(new TODO(elements[0],date));
+            }
+
+        } catch (IOException e) {
+            System.out.println("Read data error: " + e.getMessage());
+            System.out.println(e.getMessage());
+        }
+        return toDoList;
+
+    }
+
+     static void writeData() {
+        try (FileWriter fileWriter = new FileWriter("ToDOList.csv");
+        BufferedWriter writer = new BufferedWriter(fileWriter)) {
+            StringBuilder lineBuilder = new StringBuilder();
+            for (TODO todo : todoList) {
+                lineBuilder.append(todo.getTitle()).append(',');
+                lineBuilder.append(todo.getUntil());
+                writer.write(lineBuilder.toString());
+                writer.newLine();
+                lineBuilder.setLength(0);
+            }
+        } catch (IOException e) {
+            System.out.println("Write data error: " + e.getMessage() );
+        }
+
+    }
+    
+
+
+
+
 
 }
